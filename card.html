@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transaction Receipt</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #EDEDED;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 12px;
+  }
+  .card {
+    width: 100%;
+    max-width: 340px;
+    background: #FFFFFF;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+  }
+
+  /* Header */
+  .header {
+    background: #8BC34A;
+    padding: 14px 20px 16px;
+    position: relative;
+  }
+  .header-actions {
+    position: absolute;
+    top: 18px;
+    right: 16px;
+    display: flex;
+    gap: 14px;
+  }
+  .header-actions button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: #FFFFFF;
+  }
+  .header-actions svg { width: 17px; height: 17px; display: block; }
+
+  .shield {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.28);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .shield svg { width: 18px; height: 18px; color: #FFFFFF; }
+
+  .header-title {
+    margin-top: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #FFFFFF;
+  }
+  .header-subtitle {
+    margin-top: 1px;
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.92);
+  }
+
+  /* Body */
+  .body { padding: 20px 20px 22px; }
+
+  .label-small {
+    font-size: 12px;
+    font-weight: 400;
+    color: #9CA3AF;
+    margin-bottom: 8px;
+  }
+  .message {
+    font-size: 14.5px;
+    line-height: 1.55;
+    font-weight: 600;
+    color: #1F2937;
+  }
+
+  .divider {
+    height: 1px;
+    background: #EDEDED;
+    margin: 20px 0;
+  }
+
+  /* QR section */
+  .qr-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .qr-box {
+    width: 190px;
+    height: 190px;
+    background: #FFFFFF;
+    border: 1px solid #E5E5E5;
+    border-radius: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .qr-box img.qr { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; }
+  .qr-logo {
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    box-shadow: 0 0 0 3px #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .qr-logo-inner {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #C7A15A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .qr-logo-inner svg { width: 24px; height: 24px; color: #FFFFFF; }
+
+  /* Button */
+  .view-receipt-btn {
+    width: auto;
+    min-width: 168px;
+    height: 42px;
+    padding: 0 22px;
+    border-radius: 999px;
+    background: #B8860B;
+    border: none;
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    cursor: pointer;
+    margin: 22px auto 0;
+    box-shadow: 0 2px 6px rgba(184,134,11,0.35);
+  }
+  .view-receipt-btn:hover { background: #A67809; }
+  .view-receipt-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  /* Footer */
+  .footer {
+    background: #F2F2F2;
+    border-top: 1px solid #EDEDED;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .bank-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #C7A15A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .bank-icon svg { width: 18px; height: 18px; color: #FFFFFF; }
+  .bank-name {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #374151;
+  }
+  .bank-tagline {
+    font-size: 12px;
+    font-weight: 400;
+    color: #9CA3AF;
+    margin-top: 1px;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <div class="header">
+    <div class="header-actions">
+      <button aria-label="Share">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3" fill="currentColor"/><circle cx="6" cy="12" r="3" fill="currentColor"/><circle cx="18" cy="19" r="3" fill="currentColor"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
+      <button aria-label="Download">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </button>
+      <button aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="shield">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+    </div>
+
+    <div class="header-title">Thank You!</div>
+    <div class="header-subtitle">Success</div>
+  </div>
+
+  <div class="body">
+
+    <div class="label-small">Message</div>
+    <div class="message">
+      %MESSAGE%
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="qr-section">
+      <div class="qr-box">
+        <img class="qr" src="%QR_CODE_IMG_SRC%" alt="QR code to verify transaction" />
+        <div class="qr-logo">
+          <div class="qr-logo-inner">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 9h1"/><path d="M9 13h1"/><path d="M14 9h1"/><path d="M14 13h1"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="view-receipt-btn" onclick="window.open('%RECEIPT_PDF_URL%', '_blank')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12v18l-3-2-3 2-3-2-3 2V2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/></svg>
+      VIEW RECEIPT
+    </button>
+
+  </div>
+
+  <div class="footer">
+    <div class="bank-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 9h1"/><path d="M9 13h1"/><path d="M14 9h1"/><path d="M14 13h1"/></svg>
+    </div>
+    <div>
+      <div class="bank-name">Commercial Bank of Ethiopia</div>
+      <div class="bank-tagline">The Bank You can always Rely on!</div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
