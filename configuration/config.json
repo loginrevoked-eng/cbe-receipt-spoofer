@@ -1,0 +1,15 @@
+{
+  "self_domain": "localhost",
+  "mobile_receipt_gen_endpoint": "/generate-mobile-receipt",
+  "qr_code_size": "150x150",
+  "pdf_baseurl": "http://localhost:8000/receipts/pdf",
+  "qrcode_baseurl": "https://api.qrserver.com/v1/create-qr-code",
+  "html2pdf_api_url": "https://api.html2pdfrocket.com/pdf",
+  "supabase_s3_bucket_name": "receipt_pdfs",
+  "supabase_s3_endpoint_url_s3": "https://imjyodtjkxfeuduamnab.storage.supabase.co/storage/v1/s3",
+  "supabase_s3_aws_region": "us-east-2",
+  "receipts_db_table": "receipts",
+  "receipt_form_html_filename": "../templates/receipt_form.html",
+  "mobile_receipt_html_template_filename": "../templates/card.html",
+  "receipt_pdf_html_template_filename": "../templates/receipt.pdf.html"
+}
