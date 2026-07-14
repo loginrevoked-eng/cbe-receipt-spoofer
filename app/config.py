@@ -75,7 +75,7 @@ class Config:
     commands:CommandConfig=field(default_factory=lambda: CommandConfig().load("configuration/command-config.json"))
 
     def __post_init__(self):
-        self.pdf_baseurl.replace("%DOMAIN%", self.self_domain)
+        self.pdf_baseurl = self.pdf_baseurl.replace("%DOMAIN%", self.self_domain)
 
     def from_dict(self, **kwargs):
         for key, value in kwargs.items():

@@ -102,6 +102,7 @@ class Receipt:
         self.receipt_id = hashlib.sha256(
             f"{secret}_{int(time.time())}".encode()
         ).hexdigest()[:16].upper()
+        self.post_init()
         return self.receipt_id
     
     def to_pdf(self, pdf_filepath: str=None, html_template: str = None) -> bytes:
