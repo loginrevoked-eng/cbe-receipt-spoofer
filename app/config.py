@@ -50,7 +50,7 @@ class Config:
     self_domain: str = "localhost"
     mobile_receipt_gen_endpoint: str = "/generate-mobile-receipt"
     qr_code_size: str = "150x150"
-    pdf_baseurl: str = "http://localhost:8000/receipts/pdf"
+    pdf_baseurl: str = "https://%DOMAIN%/receipts/pdf"
     qrcode_baseurl: str = "https://api.qrserver.com/v1/create-qr-code"
     mobile_receipt_html_template_filename: str = None
     receipt_pdf_html_template_filename: str = None
@@ -60,8 +60,11 @@ class Config:
     supabase_s3_aws_region: str = "us-east-2"
     receipts_db_table: str = "receipts"
     receipt_form_html_filename: str = None
-    credentials: Credentials = field(default_factory=lambda: Credentials().load("../configuration/.env"))
+    credentials: Credentials = field(default_factory=lambda: Credentials().load("configuration/.env"))
     commands:CommandConfig=field(default_factory=lambda: CommandConfig().load())
+
+    def __post_init__(self):
+        self.pdf_baseurl.replace("%DOMAIN%", self.self_domain)
 
     def from_dict(self, **kwargs):
         for key, value in kwargs.items():

@@ -7,7 +7,7 @@ from .db import DBManager
 from .config import Config
 from .receipt import Receipt
 
-config = Config().from_json("../configuration/config.json")
+config = Config().from_json("configuration/config.json")
 s3_client = S3Client(config=config)
 db_manager = DBManager(config=config)
 db_manager.create_receipts_table()
