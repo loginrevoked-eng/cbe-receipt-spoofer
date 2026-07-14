@@ -128,12 +128,13 @@ body {
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    background: #C7A15A;
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
   }
-  .qr-logo-inner svg { width: 24px; height: 24px; color: #FFFFFF; }
+  .qr-logo-inner img { width: 24px; height: 24px; object-fit: contain; transform: scale(2); }
 
   /* Button */
   .view-receipt-btn {
@@ -172,13 +173,14 @@ body {
     width: 34px;
     height: 34px;
     border-radius: 50%;
-    background: #C7A15A;
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    overflow: hidden;
   }
-  .bank-icon svg { width: 18px; height: 18px; color: #FFFFFF; }
+  .bank-icon img { width: 18px; height: 18px; object-fit: contain; transform: scale(2); }
   .bank-name {
     font-size: 13.5px;
     font-weight: 700;
@@ -231,7 +233,7 @@ body {
         <img class="qr" src="%QR_CODE_IMG_SRC%" alt="QR code to verify transaction" />
         <div class="qr-logo">
           <div class="qr-logo-inner">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 9h1"/><path d="M9 13h1"/><path d="M14 9h1"/><path d="M14 13h1"/></svg>
+            <img src="../assets/cbe_bank.png" alt="Bank logo" />
           </div>
         </div>
       </div>
@@ -246,7 +248,7 @@ body {
 
   <div class="footer">
     <div class="bank-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 9h1"/><path d="M9 13h1"/><path d="M14 9h1"/><path d="M14 13h1"/></svg>
+      <img src="../assets/cbe_bank.png" alt="Bank logo" />
     </div>
     <div>
       <div class="bank-name">Commercial Bank of Ethiopia</div>
