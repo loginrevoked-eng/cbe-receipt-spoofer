@@ -32,9 +32,10 @@ class S3Client:
 
     def get_direct_url(self, filename: str, expires_in: int = 3600):
         try:
+            key = filename if filename.lower().endswith(".pdf") else f"{filename}.pdf"
             return self.boto_client.generate_presigned_url(
                 ClientMethod="get_object",
-                Params={"Bucket": self.bucket_name, "Key": filename},
+                Params={"Bucket": self.bucket_name, "Key": key},
                 ExpiresIn=expires_in,
             )
         except ClientError as e:

@@ -73,7 +73,7 @@ async def generate_mobile_receipt(
 
 @app.get("/receipts/pdf/{receipt_id}")
 def get_pdf_receipt(receipt_id: str):
-    direct_s3_pdf_url = s3_client.get_direct_url(f"{receipt_id}.pdf")
+    direct_s3_pdf_url = s3_client.get_direct_url(receipt_id)
     
     if not direct_s3_pdf_url:
         raise HTTPException(status_code=404, detail="Receipt PDF not found")
