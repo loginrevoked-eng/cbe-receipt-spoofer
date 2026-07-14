@@ -10,9 +10,18 @@ from .receipt import Receipt
 config = Config().from_json("configuration/config.json")
 s3_client = S3Client(config=config)
 db_manager = DBManager(config=config)
-db_manager.create_receipts_table()
 
 app = FastAPI()
+
+
+@app.on_event("startup")
+def startup_event():
+    db_manager.create_receipts_table()
+
+
+@app.on_event("shutdown")
+def shutdown_event():
+    db_manager.close()
 
 
 

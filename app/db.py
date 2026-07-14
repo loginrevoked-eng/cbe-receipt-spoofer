@@ -1,4 +1,5 @@
 import psycopg2
+from psycopg2 import InterfaceError, OperationalError
 from .config import Config
 from .receipt import Receipt
 
@@ -21,10 +22,50 @@ class DBManager:
 
     def __init__(self, config: Config, **kwargs):
         self.config = config
-        self.db_conn = psycopg2.connect(
-            kwargs.get("connection_string") or config.credentials.neon_database_url,
-            connect_timeout=10)
+        self.connection_string = kwargs.get("connection_string") or config.credentials.neon_database_url
+        self.db_conn = None
         self.receipts_table = kwargs.get("receipts_table") or config.receipts_db_table
+        self.connect_timeout = kwargs.get("connect_timeout", 10)
+
+    def _connect(self):
+        self.db_conn = psycopg2.connect(
+            self.connection_string,
+            connect_timeout=self.connect_timeout,
+        )
+        return self.db_conn
+
+    def _ensure_connection(self):
+        if self.db_conn is None or self.db_conn.closed:
+            return self._connect()
+        return self.db_conn
+
+    def close(self):
+        if self.db_conn is not None and not self.db_conn.closed:
+            self.db_conn.close()
+        self.db_conn = None
+
+    def _run(self, query, params=None, fetchone=False):
+        last_error = None
+        for attempt in range(2):
+            conn = self._ensure_connection()
+            try:
+                with conn.cursor() as cur:
+                    cur.execute(query, params)
+                    result = cur.fetchone() if fetchone else None
+                conn.commit()
+                return result
+            except (InterfaceError, OperationalError) as exc:
+                last_error = exc
+                self.close()
+                if attempt == 0:
+                    continue
+                raise
+            except Exception:
+                if conn is not None and not conn.closed:
+                    conn.rollback()
+                raise
+        if last_error is not None:
+            raise last_error
 
     def create_table(self, table_name=None, **kwargs):
         table_name = table_name or self.receipts_table
@@ -32,9 +73,7 @@ class DBManager:
         cols_sql = ", ".join(f"{col} {col_type}" for col, col_type in columns.items())
         query = f"CREATE TABLE IF NOT EXISTS {table_name} ({cols_sql})"
 
-        with self.db_conn.cursor() as cur:
-            cur.execute(query)
-            self.db_conn.commit()
+        self._run(query)
 
     def create_receipts_table(self):
         """Convenience wrapper that builds the table matching Receipt.to_dict()."""
@@ -50,19 +89,28 @@ class DBManager:
 
         query = f"INSERT INTO {self.receipts_table} ({cols_sql}) VALUES ({placeholders})"
 
-        with self.db_conn.cursor() as cur:
-            cur.execute(query, values)
-            self.db_conn.commit()
+        self._run(query, values)
 
     def fetch_receipt(self, receipt_id, as_receipt=False):
         query = f"SELECT * FROM {self.receipts_table} WHERE receipt_id = %s"
 
-        with self.db_conn.cursor() as cur:
-            cur.execute(query, (receipt_id,))
-            row = cur.fetchone()
-            if row is None:
-                return None
-            columns = [desc[0] for desc in cur.description]
+        conn = self._ensure_connection()
+        try:
+            with conn.cursor() as cur:
+                cur.execute(query, (receipt_id,))
+                row = cur.fetchone()
+                if row is None:
+                    return None
+                columns = [desc[0] for desc in cur.description]
+        except (InterfaceError, OperationalError):
+            self.close()
+            conn = self._ensure_connection()
+            with conn.cursor() as cur:
+                cur.execute(query, (receipt_id,))
+                row = cur.fetchone()
+                if row is None:
+                    return None
+                columns = [desc[0] for desc in cur.description]
 
         data = dict(zip(columns, row))
         return Receipt(self.config, **data) if as_receipt else data
