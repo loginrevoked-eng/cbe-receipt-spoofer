@@ -148,12 +148,12 @@ document.getElementById('receiptForm').addEventListener('submit', (e) => {
 
   // Build query parameters for GET request
   const params = new URLSearchParams({
-    sender_name: document.getElementById('sender_name').value || 'NULL',
+    sender_name: document.getElementById('sender_name').value || 'Daniel Mebrahtom Weldegebriel',
     receiver_name: document.getElementById('receiver_name').value || 'NULL',
     amount: document.getElementById('amount').value || '0.0',
     vat: document.getElementById('vat').value || '0.0',
     commission: document.getElementById('commission').value || '0.0',
-    sender_account: document.getElementById('sender_account').value || '',
+    sender_account: document.getElementById('sender_account').value || '10****5678',
     receiver_account: document.getElementById('receiver_account').value || ''
   });
 
