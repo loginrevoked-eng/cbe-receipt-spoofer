@@ -1,8 +1,8 @@
 {
-  "self_domain": "localhost",
+  "self_domain": "cbe-receipt-spoofer.onrender.com",
   "mobile_receipt_gen_endpoint": "/generate-mobile-receipt",
   "qr_code_size": "150x150",
-  "pdf_baseurl": "http://localhost:8000/receipts/pdf",
+  "pdf_baseurl": "https://cbe-receipt-spoofer.onrender.com/receipts/pdf",
   "qrcode_baseurl": "https://api.qrserver.com/v1/create-qr-code",
   "html2pdf_api_url": "https://api.html2pdfrocket.com/pdf",
   "supabase_s3_bucket_name": "receipt_pdfs",
