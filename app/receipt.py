@@ -2,8 +2,8 @@ import hashlib
 import time
 import requests
 from datetime import datetime
-from templates import HTMLMobileReceiptTemplate, HTMLPDFReceiptTemplate
-from config import Config
+from .templates import HTMLMobileReceiptTemplate, HTMLPDFReceiptTemplate
+from .config import Config
 
 class Receipt:
     def __init__(self, config:Config, **kwargs):

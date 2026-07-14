@@ -2,10 +2,10 @@ import os
 import datetime
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse
-from s3 import S3Client
-from db import DBManager
-from config import Config
-from receipt import Receipt
+from .s3 import S3Client
+from .db import DBManager
+from .config import Config
+from .receipt import Receipt
 
 config = Config().from_json("../configuration/config.json")
 s3_client = S3Client(config=config)

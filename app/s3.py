@@ -2,7 +2,7 @@ import os
 import boto3
 from botocore.config import Config as botocore_Config
 from botocore.exceptions import ClientError
-from config import Config
+from .config import Config
 
 
 class S3Client:

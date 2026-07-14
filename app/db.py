@@ -1,6 +1,6 @@
 import psycopg2
-from config import Config
-from receipt import Receipt
+from .config import Config
+from .receipt import Receipt
 
 
 class DBManager:

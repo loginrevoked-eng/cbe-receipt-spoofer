@@ -1,4 +1,4 @@
-from utils import Utils
+from .utils import Utils
 
 class HTMLMobileReceiptTemplate:
     def __init__(self, template_path:str=None, **kwargs):
