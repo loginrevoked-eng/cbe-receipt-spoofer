@@ -42,7 +42,18 @@ class Credentials:
 class CommandConfig:
     generate_pdfs:bool=False
     
-    def load(self):
+    def load(self, json_filepath:str):
+        return self.from_json(json_filepath)
+    
+    def from_dict(self, **kwargs):
+        for key, value in kwargs.items():
+            if hasattr(self, key):
+                setattr(self, key, value)   
+
+    def from_json(self, json_filename: str):
+        with open(json_filename, "r") as f:
+            data = json.load(f)
+            self.from_dict(**data)
         return self
 
 @dataclass
@@ -61,7 +72,7 @@ class Config:
     receipts_db_table: str = "receipts"
     receipt_form_html_filename: str = None
     credentials: Credentials = field(default_factory=lambda: Credentials().load("configuration/.env"))
-    commands:CommandConfig=field(default_factory=lambda: CommandConfig().load())
+    commands:CommandConfig=field(default_factory=lambda: CommandConfig().load("configuration/command-config.json"))
 
     def __post_init__(self):
         self.pdf_baseurl.replace("%DOMAIN%", self.self_domain)
