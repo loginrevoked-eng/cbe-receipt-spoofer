@@ -81,8 +81,9 @@ def get_pdf_receipt(receipt_id: str):
     if not direct_s3_pdf_url:
         raise HTTPException(status_code=404, detail="Receipt PDF not found")
         
-    return RedirectResponse(url=direct_s3_pdf_url, status_code=307)
-
+    resp = RedirectResponse(url=direct_s3_pdf_url, status_code=307)
+    resp.headers["Cache-Control"] = "public, max-age=3600"
+    return resp
 
 @app.get("/receipts/mobile/{receipt_id}", response_class=HTMLResponse)
 def get_mobile_receipt(receipt_id: str):
