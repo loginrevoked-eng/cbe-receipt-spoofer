@@ -245,7 +245,9 @@
 </html>
 <script>
 function showReceiptPDF() {
-    window.open("%RECEIPT_PDF_URL%");
+    window.open(
+       "https://docs.google.com/gview?embedded=true&url=%RECEIPT_PDF_URL%"
+    );
 }
 </script>
 
