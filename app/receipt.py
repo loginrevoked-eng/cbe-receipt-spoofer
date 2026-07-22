@@ -63,6 +63,7 @@ class Receipt:
     
     def pdf_html_template(self) -> str:
         template = HTMLPDFReceiptTemplate(
+            config=self.config,
             template_path=self.config.receipt_pdf_html_template_filename,
             sender=self.sender_name,
             receiver=self.receiver_name,
@@ -80,7 +81,8 @@ class Receipt:
         return template.render()
     
     def mobile_html_template(self) -> str:
-        template = HTMLMobileReceiptTemplate(   
+        template = HTMLMobileReceiptTemplate(  
+            config=self.config,        
             template_path=self.config.mobile_receipt_html_template_filename,
             sender=self.sender_name,
             receiver=self.receiver_name,
