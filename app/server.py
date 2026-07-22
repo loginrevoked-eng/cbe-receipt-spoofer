@@ -6,7 +6,7 @@ from .db import DBManager
 from .config import Config
 from .receipt import Receipt
 from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse
+from fastapi.responses import Response, HTMLResponse, FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 
