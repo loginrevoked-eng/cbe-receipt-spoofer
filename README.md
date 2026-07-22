@@ -1,1 +1,1 @@
-olala
+receipt generator
