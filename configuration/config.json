@@ -3,7 +3,7 @@
   "mobile_receipt_gen_endpoint": "/generate-mobile-receipt",
   "qr_code_size": "150x150",
   "pdf_baseurl": "https://cbe-receipt-spoofer.onrender.com/receipts/pdf",
-  "qrcode_baseurl": "https://api.qrserver.com/v1/create-qr-code",
+  "qrcode_baseurl": "/qr-gen",
   "html2pdf_api_url": "https://api.html2pdfrocket.com/pdf",
   "supabase_s3_bucket_name": "receipt_pdfs",
   "supabase_s3_endpoint_url_s3": "https://imjyodtjkxfeuduamnab.storage.supabase.co/storage/v1/s3",

@@ -43,7 +43,7 @@ class Receipt:
         qrcode_baseurl = self.config.qrcode_baseurl
         qrcode_size = self.config.qr_code_size
         self.txn_pdf_url = f"{pdf_baseurl}/{self.receipt_id}.pdf"
-        self.txn_qrcode_url = f"{qrcode_baseurl}/?size={qrcode_size}&data={self.txn_pdf_url}"
+        self.txn_qrcode_url = f"{qrcode_baseurl}/?data={self.txn_pdf_url}"
     
     def to_dict(self) -> dict[str, str | float | int]:
         return {
