@@ -244,17 +244,14 @@
 </body>
 </html>
 <script>
-function showReceiptPDF() {
-    // Clear document interface to setup full-page viewport container
+async function showReceiptPDF() {
     document.body.innerHTML = "";
-    document.body.style.background = "#525659"; 
-    document.body.style.flexDirection = "column";
-    document.body.style.justifyContent = "flex-start";
-    document.body.style.overflowY = "auto";
+    document.body.style.background = "#525659";
+    document.body.style.margin = "0";
     document.body.style.padding = "20px 0";
+    document.body.style.overflowY = "auto";
 
     const container = document.createElement("div");
-    container.style.width = "100%";
     container.style.maxWidth = "800px";
     container.style.margin = "0 auto";
     container.style.display = "flex";
@@ -262,41 +259,50 @@ function showReceiptPDF() {
     container.style.gap = "20px";
     document.body.appendChild(container);
 
-    // Dynamic extraction & execution context setup for PDF.js libraries
     const script = document.createElement("script");
     script.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js";
-    script.onload = () => {
-        const pdfjsLib = window['pdfjs-dist/build/pdf'];
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cloudflare.com';
 
-        // Load document object binary stream target
-        pdfjsLib.getDocument("%RECEIPT_PDF_URL%").promise.then(pdf => {
-            // Loop array iterations for sequential compilation across multi-page receipts
+    script.onload = async () => {
+        const pdfjsLib = window["pdfjs-dist/build/pdf"];
+
+        // Correct worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+            "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
+
+        try {
+            const pdf = await pdfjsLib.getDocument("REPLACE_WITH_PDF_URL").promise;
+
             for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-                pdf.getPage(pageNum).then(page => {
-                    const viewport = page.getViewport({ scale: 1.5 });
-                    const canvas = document.createElement("canvas");
-                    const context = canvas.getContext("2d");
-                    
-                    canvas.height = viewport.height;
-                    canvas.width = viewport.width;
-                    canvas.style.width = "100%";
-                    canvas.style.height = "auto";
-                    canvas.style.boxShadow = "0 4px 12px rgba(0,0,0,0.3)";
-                    canvas.style.backgroundColor = "#ffffff";
-                    
-                    container.appendChild(canvas);
+                const page = await pdf.getPage(pageNum);
 
-                    page.render({
-                        canvasContext: context,
-                        viewport: viewport
-                    });
-                });
+                const viewport = page.getViewport({ scale: 1.5 });
+
+                const canvas = document.createElement("canvas");
+                const context = canvas.getContext("2d");
+
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                canvas.style.width = "100%";
+                canvas.style.height = "auto";
+                canvas.style.background = "#fff";
+                canvas.style.boxShadow = "0 4px 12px rgba(0,0,0,.3)";
+
+                container.appendChild(canvas);
+
+                await page.render({
+                    canvasContext: context,
+                    viewport
+                }).promise;
             }
-        }).catch(err => {
-            container.innerHTML = `<div style="color:#ff4d4d; font-family:sans-serif; text-align:center; padding:20px; font-weight:bold;">Failed to render document context structure: ${err.message}</div>`;
-        });
+        } catch (err) {
+            container.innerHTML = `
+                <div style="color:#ff4d4d;padding:20px;text-align:center;font-family:sans-serif;">
+                    Failed to load PDF:<br>${err.message}
+                </div>
+            `;
+        }
     };
+
     document.head.appendChild(script);
 }
 </script>
