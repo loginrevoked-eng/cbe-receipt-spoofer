@@ -88,7 +88,13 @@ def get_pdf_receipt(receipt_id: str):
     try:
         r = requests.get(direct_s3_pdf_url)
         r.raise_for_status()
-        return Response(content=r.content, media_type="application/pdf")
+        return Response(
+            content=r.content, 
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": "inline"
+            }
+        )
 
     except requests.exceptions.HTTPError as e:
         if e.response.status_code == 404:
