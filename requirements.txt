@@ -6,3 +6,4 @@ boto3
 requests
 pytest
 pytest-mock
+segno

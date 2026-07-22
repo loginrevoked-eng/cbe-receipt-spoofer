@@ -1,6 +1,7 @@
 import os
 import datetime
 from .s3 import S3Client
+from .qrgen import QRGen
 from .db import DBManager
 from .config import Config
 from .receipt import Receipt
@@ -89,3 +90,13 @@ def get_mobile_receipt(receipt_id: str):
     if not receipt_obj:
         raise HTTPException(status_code=404, detail="Receipt data not found")
     return receipt_obj.mobile_html_template()
+
+
+@app.get("/qr-gen")
+def qrserver(
+    data: str = Query("https://pornhub.com"),
+    ecorr: str = Query("h"),
+    out_kind: str = Query("png"),
+):
+    qr_bytes = QRGen(ecorr=ecorr, out_kind=out_kind).asbytes(data)
+    return Response(content=qr_bytes, media_type=f"image/{out_kind}")
