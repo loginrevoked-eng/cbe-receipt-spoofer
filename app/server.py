@@ -1,4 +1,5 @@
 import os
+import requests
 import datetime
 from .s3 import S3Client
 from .qrgen import QRGen
@@ -77,13 +78,28 @@ async def generate_mobile_receipt(
 @app.get("/receipts/pdf/{receipt_id}")
 def get_pdf_receipt(receipt_id: str):
     direct_s3_pdf_url = s3_client.get_direct_url(receipt_id)
-    
+
     if not direct_s3_pdf_url:
         raise HTTPException(status_code=404, detail="Receipt PDF not found")
-        
-    resp = RedirectResponse(url=direct_s3_pdf_url, status_code=307)
-    resp.headers["Cache-Control"] = "public, max-age=3600"
-    return resp
+
+    if config.commands.outsource_pdf:
+        return RedirectResponse(url=direct_s3_pdf_url, status_code=307)
+
+    try:
+        r = requests.get(direct_s3_pdf_url)
+        r.raise_for_status()
+        return Response(content=r.content, media_type="application/pdf")
+
+    except requests.exceptions.HTTPError as e:
+        if e.response.status_code == 404:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Receipt data not found at {direct_s3_pdf_url}"
+            )
+        raise HTTPException(
+            status_code=502,
+            detail=f"Failed to fetch PDF from S3 bucket {direct_s3_pdf_url}"
+        )
 
 @app.get("/receipts/mobile/{receipt_id}", response_class=HTMLResponse)
 def get_mobile_receipt(receipt_id: str):

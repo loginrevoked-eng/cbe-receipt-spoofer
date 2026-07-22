@@ -41,6 +41,7 @@ class Credentials:
 @dataclass
 class CommandConfig:
     generate_pdfs:bool=False
+    outsource_pdf:bool=True
     
     def load(self, json_filepath:str):
         return self.from_json(json_filepath)
