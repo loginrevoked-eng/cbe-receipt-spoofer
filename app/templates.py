@@ -1,7 +1,8 @@
 from .utils import Utils
+from .config import Config
 
 class HTMLMobileReceiptTemplate:
-    def __init__(self, template_path:str=None, **kwargs):
+    def __init__(self, config:Config, template_path:str=None, **kwargs):
         self.sender = kwargs.get('sender', 'N/A')
         self.receiver = kwargs.get('receiver', 'N/A')
         self.amount = kwargs.get('amount', '0.00')
@@ -12,6 +13,7 @@ class HTMLMobileReceiptTemplate:
         self.vat = kwargs.get('vat', 15)
         self.commission = kwargs.get('commission', 0.0)
         self.total_amount = kwargs.get('total_amount', self.amount)
+        self.config = config
         
         self.template_html = self.read_template(template_path)
 
@@ -37,7 +39,7 @@ class HTMLMobileReceiptTemplate:
 
 
 class HTMLPDFReceiptTemplate:
-    def __init__(self, template_path:str=None, **kwargs):
+    def __init__(self, config:Config, template_path:str=None, **kwargs):
         self.sender = kwargs.get('sender', 'N/A')
         self.receiver = kwargs.get('receiver', 'N/A')
         self.amount = kwargs.get('amount', '0.00')
@@ -49,7 +51,7 @@ class HTMLPDFReceiptTemplate:
         self.total_amount = kwargs.get('total_amount', self.amount)
         self.sender_account = kwargs.get('sender_account', '')
         self.receiver_account = kwargs.get('receiver_account', '')
-        
+        self.config = config
 
         self.template_path = template_path
         self.template_html = self.read_template(template_path)
@@ -68,6 +70,7 @@ class HTMLPDFReceiptTemplate:
         vat_amount = float(self.commission) * (float(self.vat) / 100) if self.commission else 0.0
         amount_words = Utils.numtoword(self.total_amount)
         return (self.template_html
+            .replace("%ASSETS_ENDPOINT%", f"https://{self.config.self_domain}/assets")
             .replace('%RECEIPT_ID%', self.receipt_id)
             .replace('%SENDER%', self.sender)
             .replace('%SENDER_ACCOUNT%', sender_account)
