@@ -270,7 +270,7 @@ async function showReceiptPDF() {
             "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
 
         try {
-            const pdf = await pdfjsLib.getDocument("REPLACE_WITH_PDF_URL").promise;
+            const pdf = await pdfjsLib.getDocument("%RECEIPT_PDF_URL%").promise;
 
             for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
                 const page = await pdf.getPage(pageNum);
